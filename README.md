@@ -14,13 +14,8 @@ https://wandb.ai/ma23c011-indian-institute-of-technology-madras/Small_cnn_model/
 
 ### Overview
 
-In the first section of the assignment, I constructed a custom convolutional neural network (CNN) from scratch using PyTorch. The goal was to analyze how different design and training choices affect model performance. To streamline experimentation, I employed Weights & Biases (WandB) for managing hyperparameter sweeps and performance logging.
-
+In the first section of the assignment, I constructed a custom convolutional neural network (CNN) from scratch using PyTorch.
 ---
-
-### Questions 1–3: Architecture Setup and Hyperparameter Tuning
-
-The notebook `Q1toQ3.ipynb` handles:
 - Dataset preparation for training and validation.
 - Defining a comprehensive sweep configuration.
 - Running multiple training sessions with varying hyperparameters using WandB’s Bayesian optimization approach.
@@ -73,8 +68,38 @@ Best model from training :
 'conv_activation': 'GeLU', 
 'conv_filters': [32, 64, 128, 256, 512], 
 'kernel_size': [3, 3, 3, 3, 3], 
-'dense_activation': 'SiLU', 
-'dense_neurons': 256, 
-'dropout': 0.3, 
-'lr': 0.0001, 
-'data_augmentation': False
+
+### Testing:
+
+In order to test the best trained model on the test data set, a test script has been written that:
+1. Evaluates the test accuracy
+2. Plots a confusion matrix
+3. Plots sample images, the associated predictions and true labels.
+ 
+The commands to run the testing script is simply:
+
+```python3 test.py```
+
+# Part-B Using Pre-trained Models for Image Classification
+
+The code Dataset.py : [iNaturalist dataset](https://github.com/vamsikrishnamohan/DA6401-Assingment2-/blob/main/data_loading.py) loads the images.
+
+Model is ResNet50
+
+Sweep Config
+```python
+sweep_config = {
+    "method": "grid",
+    "metric": {"name": "val_acc", "goal": "maximize"}, 
+    "parameters": {
+        "epochs": {"values": [5]},
+        "batch_size": {"values": [64, 128]},
+        "denselayer_size": {"values": [64, 128]},
+        "l_rate": {"values": [0.001, 0.0001]},
+        "optimizer": {"values": ["Adam"]},
+        "dropout": {"values": [0.2, 0.4]},
+        "model_version": {"values": ["resnet50"]},
+        "activation": {"values": ["relu", "leakyrelu"]}
+    }
+}
+```
